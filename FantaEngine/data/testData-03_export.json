@@ -1,0 +1,406 @@
+{
+  "graphs": {
+    "Test Graph": {
+      "vertices": [
+        {
+          "id": 6,
+          "bone": "root",
+          "x": 757,
+          "y": 757
+        },
+        {
+          "id": 1,
+          "bone": "testBone",
+          "x": 120,
+          "y": 120
+        },
+        {
+          "id": 3,
+          "bone": "root",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "id": 5,
+          "bone": "root",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "id": 4,
+          "bone": "testBone",
+          "x": 120,
+          "y": 120
+        }
+      ],
+      "shapes": [
+        {
+          "name": "Shape 01",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            1
+          ]
+        },
+        {
+          "name": "Shape 02",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            3,
+            5
+          ]
+        },
+        {
+          "name": "Shape 03 (clone of 02)",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    "Second Graph": {
+      "vertices": [
+        {
+          "id": 6,
+          "bone": "root",
+          "x": 999,
+          "y": 999
+        },
+        {
+          "id": 1,
+          "bone": "testBone",
+          "x": 120,
+          "y": 120
+        },
+        {
+          "id": 3,
+          "bone": "root",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "id": 5,
+          "bone": "root",
+          "x": 100,
+          "y": 100
+        },
+        {
+          "id": 4,
+          "bone": "testBone",
+          "x": 120,
+          "y": 120
+        }
+      ],
+      "shapes": [
+        {
+          "name": "Shape 01",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            1
+          ]
+        },
+        {
+          "name": "Shape 02",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            3,
+            5
+          ]
+        },
+        {
+          "name": "Shape 03 (clone of 02)",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    }
+  },
+  "animations": {
+    "Testing": {
+      "graphs": {
+        "Test Graph": {
+          "1": [
+            {
+              "time": 1,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 2,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 3,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "3": [
+            {
+              "time": 1,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 2,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 3,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "4": [
+            {
+              "time": 1,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 2,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 3,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "5": [
+            {
+              "time": 1,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 2,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 3,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "6": [
+            {
+              "time": 1,
+              "x": 999,
+              "y": 999
+            },
+            {
+              "time": 2,
+              "x": 444,
+              "y": 444
+            },
+            {
+              "time": 3,
+              "x": 757,
+              "y": 757
+            }
+          ]
+        },
+        "Second Graph": {
+          "1": [
+            {
+              "time": 0,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "3": [
+            {
+              "time": 0,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "4": [
+            {
+              "time": 0,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "5": [
+            {
+              "time": 0,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "6": [
+            {
+              "time": 0,
+              "x": 999,
+              "y": 999
+            }
+          ]
+        }
+      }
+    },
+    "Twerking": {
+      "graphs": {
+        "Test Graph": {
+          "1": [
+            {
+              "time": 1,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 2,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 3,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "3": [
+            {
+              "time": 1,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 2,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 3,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "4": [
+            {
+              "time": 1,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 2,
+              "x": 120,
+              "y": 120
+            },
+            {
+              "time": 3,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "5": [
+            {
+              "time": 1,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 2,
+              "x": 100,
+              "y": 100
+            },
+            {
+              "time": 3,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "6": [
+            {
+              "time": 1,
+              "x": 999,
+              "y": 999
+            },
+            {
+              "time": 2,
+              "x": 444,
+              "y": 444
+            },
+            {
+              "time": 3,
+              "x": 757,
+              "y": 757
+            }
+          ]
+        },
+        "Second Graph": {
+          "1": [
+            {
+              "time": 0,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "3": [
+            {
+              "time": 0,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "4": [
+            {
+              "time": 0,
+              "x": 120,
+              "y": 120
+            }
+          ],
+          "5": [
+            {
+              "time": 0,
+              "x": 100,
+              "y": 100
+            }
+          ],
+          "6": [
+            {
+              "time": 0,
+              "x": 999,
+              "y": 999
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+BODY
+{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: sans-serif;
+	color: #E9EAEB;
+}
+.placeholder
+{
+	display: block;
+	margin: 20px;
+	background-color: #EEE;
+	height: 100%;
+}
+/*FRAMEWORK*/
+HEADER
+{
+	position: absolute;
+	width: 100%;
+	height: 64px;
+	top: 0;
+	background: #1E2129;
+}
+#content
+{
+	position: absolute;
+	width: 100%;
+	top: 64px;
+	bottom: 64px;
+	background: #E9EAEB;
+	/*[empty]color:;*/
+}
+FOOTER
+{
+	position: absolute;
+	width: 100%;
+	height: 64px;
+	bottom: 0;
+	background: #1E2129;
+}
+/*CONTENT*/
+NAV, ASIDE, SECTION>DIV
+{
+	display: block;
+	float: left;
+	height: 100%;
+	overflow:hidden;
+}
+
+NAV, ASIDE 
+{
+	background-color: #3F4652;
+}
+
+NAV
+{
+	width: 242px;
+	height: 100%;
+	background-color: #272A33;
+
+	cursor: pointer;
+}
+ASIDE
+{
+	width: 30%;
+}
+.infoPanel
+{
+	display: block;
+	float: right;
+	background-color: #272A33;
+	width:242px;
+	height: 100%;
+}
+
+.box 
+{
+	padding: 20px;
+}
+
+/*CLEARFIX*/
+.clearfix:before, .clearfix:after
+{
+	content: " ";
+	/*1*/
+	display: table;
+	/*2*/
+}
+.clearfix:after
+{
+	clear: both;
+}

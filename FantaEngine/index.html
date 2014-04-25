@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>FantaEngine IDE</title>
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/sylvester.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Loader.js"></script> 
+		<script src="src/Stage.js"></script> 
+		<script src="src/Shape.js"></script> 
+		<script src="src/Animation.js"></script> 
+
+		<script>
+
+			var stage;
+
+			var loader = new Loader();
+
+			// GUI helper objects
+			var shapeObserver = new Shape(); 
+			var boneObserver = new Bone();
+			var guiData = {
+				animationName : 'testAnimation'
+			};
+
+			var update = function(){
+
+				console.log('Window updated.');
+
+				// Update the navigation
+				// Add bones to the list
+				var list = document.getElementById('boneList');
+				var items = list.childNodes;
+
+				// For now, assuming bones can only be added
+				if(stage.bones.length != items.length){
+
+					for(var i=0;i<stage.bones.length;i++){
+
+						var bone = stage.bones[i];
+						var item = items[i];
+
+						if(item && item.innerText != bone.name){
+							createMenuItem(item,bone.name,stage.setCurrentBone,bone.name);
+						}else if(typeof item === 'undefined'){
+							item = document.createElement('li');
+							createMenuItem(item,bone.name,stage.setCurrentBone,bone.name);
+							list.appendChild(item);
+						}
+					}
+				}
+
+				// Update the GUI view
+				boneObserver.map(stage.currentBone,true);
+				shapeObserver.map(stage.currentShape,true); // clone shape
+
+				stage.update();
+
+			};
+
+			var createMenuItem = function(element,innerText,callback,value){
+
+				element.innerText = innerText;
+				element.onclick = function(){
+					console.log("Menu item: ",value);
+					callback(value);
+				}
+
+				return element;
+			};
+
+			window.addEventListener('click',update,false);
+
+			var pushChanges = function(){
+
+				console.log('Push GUI changes to shape');
+				stage.currentShape.map(shapeObserver,true);
+				stage.update();
+			};
+
+			var addNewShape = function(){
+
+				var shape = stage.addShape();
+
+				// Add shapes to the list
+				var list = document.getElementById('shapeList');
+				var item = document.createElement('li');
+				item.innerText = shape.name;
+				item.onclick = function(){
+					console.log("Clickety clack",shape.name);
+					stage.setCurrentShape(shape.name);
+				};
+				list.appendChild(item);
+
+				stage.mode = "PLOT";
+
+				update();
+
+				console.warn("Adding shapes after animation can be buggy!");
+			};
+
+			var saveGraphData = function(){
+
+				stage.graph.updateData();
+			};
+
+			var exportData = function(){
+
+				
+				stage.timeline.apply(0); // zero timeline 
+				stage.timeline.keyframe(0); // put a keyframe at the start if none exists
+				stage.graph.updateData(); // timeline will do this, but just to be explicit
+
+				/*
+				var dataObject = {};
+				dataObject.graphs = {};
+				dataObject.animations = {};
+
+				dataObject.graphs[stage.graph.data.name] = {
+					vertices : stage.graph.data.vertices ,
+					shapes : stage.graph.data.shapes
+				};
+
+				dataObject.animations[guiData.animationName] = {};
+				dataObject.animations[guiData.animationName].graphs = stage.timeline.getData();
+
+				var json = JSON.stringify(dataObject);
+				console.log(json);
+				*/
+
+				var animation = new Animation(guiData.animationName);
+				animation.addTimeline(stage.timeline);
+
+				var json = loader.exportJSON([stage.graph],[animation]);
+				var parts = [json];
+				var blob = new Blob(parts, {type : 'application/json'}); 
+				var localUrl = window.URL.createObjectURL(blob);
+
+				//console.log(myUrl);
+
+				var e = document.getElementById('fileList');
+				var link = document.createElement('a');
+				link.href = localUrl;
+				var filename = "export_"+Date.now()+".json";
+				link.innerText = filename;
+				link.download = filename;
+				e.appendChild(link);
+
+				console.log("Data exported as: "+localUrl);
+			};
+
+			
+			window.onload = function(){
+
+				// ----
+				var canvas = document.getElementById('myCanvas');
+				stage = new Stage(canvas);
+				stage.init();
+
+				shapeObserver.map(stage.currentShape.updateData(),true);
+				stage.update();
+
+				// ---
+
+				//shapeObserver = new Shape();
+
+				gui = new dat.GUI();
+				var f;
+
+				gui.add(stage,'debug').onChange(stage.update);
+				gui.add(stage,'mode',["PLOT","MOVE","DRAG","DELETE","INSERT","ADD_BONE","MOVE_BONE"]).listen();
+
+				f = gui.addFolder('Root Bone');
+				f.add(Bone.root,'worldX',0,600).listen().onChange(stage.update);
+				f.add(Bone.root,'worldY',0,600).listen().onChange(stage.update);
+				f.add(Bone.root,'worldRotation',-180,180).listen().onChange(stage.update);
+				f.add(Bone.root,'worldScaleX',0.1,3.0).step(0.1).listen().onChange(stage.update);
+				f.add(Bone.root,'worldScaleY',0.1,3.0).step(0.1).listen().onChange(stage.update);
+				
+				f = gui.addFolder('Current Bone');
+				f.add(boneObserver,'name').listen();
+				f.add(boneObserver,'worldX',0,600).listen().onChange(stage.update);
+				f.add(boneObserver,'worldY',0,600).listen().onChange(stage.update);
+				f.add(boneObserver,'worldRotation',-180,180).listen().onChange(stage.update);
+				f.add(boneObserver,'worldScaleX',0.1,3.0).step(0.1).listen().onChange(stage.update);
+				f.add(boneObserver,'worldScaleY',0.1,3.0).step(0.1).listen().onChange(stage.update);
+
+				//gui.add(shapeObserver.graph,'name').listen();
+
+				gui.add(window,'addNewShape');
+
+				f = gui.addFolder('Current Shape')
+				f.add(shapeObserver,'name').listen();
+				f.add(shapeObserver,'closedPath').listen().onChange(pushChanges);
+				f.add(shapeObserver,'hasStroke').listen().onChange(pushChanges);
+				f.add(shapeObserver,'hasFill').listen().onChange(pushChanges);
+				f.addColor(shapeObserver,'strokeStyle').listen().onChange(pushChanges);
+				f.addColor(shapeObserver,'fillStyle').listen().onChange(pushChanges);
+				
+				gui.add(window,'saveGraphData');
+
+				f = gui.addFolder('Animation');
+				f.add(stage,'timeIndex',0,1000).step(1).listen();
+				f.add(stage,'addKeyframe');
+				f.add(stage,'next');
+				f.add(stage,'prev');
+				f.add(stage,'rewind');
+				f.add(stage,'play');
+				f.add(stage,'pause');
+
+				f = gui.addFolder('Export');
+				f.add(guiData,'animationName');
+				f.add(window,'exportData');
+				f.open();
+
+
+				// MENU
+
+				// Add bones to the list
+				var list = document.getElementById('boneList');
+				var item = document.createElement('li');
+				var boneName = stage.currentBone.name;
+				item.innerText = boneName;
+				item.onclick = function(){
+					console.log("Bone daddy",boneName);
+					stage.setCurrentBone(boneName);
+				};
+
+				list.appendChild(item);
+				// Add shapes to the list
+				list = document.getElementById('shapeList');
+				item = document.createElement('li');
+				var shapeName = stage.currentShape.name;
+				item.innerText = shapeName;
+				item.onclick = function(){
+					console.log("Clickety clack",shapeName);
+					stage.setCurrentShape(shapeName);
+				};
+				list.appendChild(item);
+		
+			};			
+
+		</script>
+			
+	</head>
+	<body>
+        <header>
+            <h1>Header</h1>
+            <figure class="masthead">
+                <!-- CSS image here -->
+            </figure>
+        </header>
+
+        <section id="content" class="clearfix">
+			<nav id="navbar">
+				<div class="box">
+					<span>Bones</span>
+	            	<ul id="boneList"></ul>
+	            </div>
+	            <div class="box">
+					<span>Shapes</span>
+	            	<ul id="shapeList"></ul>
+	            </div>
+	            <div class="box">
+					<span>Data Export</span>
+	            	<ul id="fileList"></ul>
+	            </div>
+	        </nav>
+
+	        <div>
+	        	<canvas id='myCanvas' width=600 height=600></canvas>
+	        </div>
+<!--
+	        <aside>
+	        	<div>Aside: Sidebar content</div>
+	        </aside>
+
+	        <div>div: Column 1</div>
+	        <div>div: Column 2</div>
+-->
+	        <div class="infoPanel">
+	        	div.infoPanel: Tools here
+	        </div>
+
+	    </section>
+
+        <footer>
+        	<div >Footer</div>
+        </footer>
+
+	</body>
+</html>
+		

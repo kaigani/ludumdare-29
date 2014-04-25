@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Data test</title>
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/sylvester.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Loader.js"></script> 
+		<!-- <script src="src/Stage.js"></script> -->
+		<script src="src/Shape.js"></script> 
+		<script src="src/Animation.js"></script> 
+
+		<script>
+
+		//window.onload = function(){
+/*
+			var bone = {
+				worldX : 0 ,
+				worldY : 0 ,
+				worldRotation : 45.0 ,
+				worldScaleX : 0.7071 ,
+				worldScaleY : 0.7071
+			};
+*/
+
+			var bone = new Bone("testBone");
+			bone.translate(100,100);
+			bone.rotate(45.0);
+			bone.scale(0.7071);
+
+			console.log("\nNew Bone: "+JSON.stringify( bone.getData() ));
+			console.log("\t[100,100] bone.localToWorldCoord",bone.localToWorldCoord({x:100,y:100}));
+			console.log("\t[100,200] bone.worldToLocalCoord",bone.worldToLocalCoord({x:100,y:200}));
+
+/*
+			skeleton = {
+
+				findBone : function(boneName){
+					console.log("Find bone: "+boneName);
+					return bone;
+				}
+			};
+*/
+
+			// Build up a shape vertex by vertex - linked to a Bone.root if nothis is specified
+			var v = new Vertex(100,100);
+			console.log( "Vertex created: "+JSON.stringify( v.getData() ) );
+
+			v.updateWorldTransform();
+			console.log( "Vertex in world: ",v.worldX,v.worldY );
+
+			console.log( "Vertex data: "+JSON.stringify( v.getData() ) );
+
+			// Build the graph
+			//var graph = new Graph("My Graph");
+			//console.log("Graph created: "+JSON.stringify( graph.updateData() ));
+
+			var v2 = new Vertex(bone,120,120);
+			var v3 = new Vertex(v);
+
+			console.log( "Vertex 2 with custom bone: ", JSON.stringify( v2.getData() ));
+			console.log( "Vertex 3 created from Vertex 1: ", JSON.stringify( v3.getData() ));
+
+			//graph.addVertex(v);
+			//graph.addVertex(v2);
+			//graph.addVertex(v3);
+
+			//console.log("\nGraph added vertices: "+JSON.stringify( graph.updateData() ));
+			//console.log("Index of vertex 2: "+graph.findVertexIndex(v2));
+
+			//graph.removeVertex(v2);
+			//console.log("\nGraph removed vertex 2: "+JSON.stringify( graph.updateData() ));
+
+			//graph.linkBones(skeleton);
+			//console.log("Bones linked.");
+
+			//graph.updateWorldTransform();
+			//console.log("\nGraph world transform update: "+JSON.stringify( graph.updateData() ));
+			var worldCoords = {
+				v : { worldX : v.worldX, worldY : v.worldY } ,
+				v2 : { worldX : v2.worldX, worldY : v2.worldY } ,
+				v3 : { worldX : v3.worldX, worldY : v3.worldY } 
+			};
+			//console.log("\tVertex world coordinates"+JSON.stringify( worldCoords ));
+
+			Bone.root.rotate(-10.0);
+
+			v.updateWorldTransform();
+			v2.updateWorldTransform();
+			v3.updateWorldTransform();
+			
+			//console.log("\nWorld transform ROOT ROTATE 45: "+JSON.stringify( graph.updateData() ));
+			worldCoords = {
+				v : { worldX : v.worldX, worldY : v.worldY } ,
+				v2 : { worldX : v2.worldX, worldY : v2.worldY } ,
+				v3 : { worldX : v3.worldX, worldY : v3.worldY } 
+			};
+			console.log("\tVertex world coordinates"+JSON.stringify( worldCoords ));
+
+			console.log("\n\nSHAPE\n");
+			
+			var shape = new Shape('Shape 01');
+			shape.addVertex(v);
+			shape.addVertex(v2); 
+			shape.addVertex(v3);
+
+			console.log("\nShape added vertex indices: "+JSON.stringify( shape.data ));
+			//console.log("Graph added vertices: "+JSON.stringify( graph.updateData() ));
+
+			console.log("\nIterate through Shape vertices")
+			for(var i=0; i < shape.vertices.length; i++){
+
+				vertex = shape.vertices[i];
+				p = { worldX : vertex.worldX , worldY : vertex.worldY };
+
+				console.log("Vertex: ",vertex.getData(),JSON.stringify(p));
+			}
+
+			var shape2 = new Shape('Shape 02');
+			shape2.map(shape);
+			console.log("\nShape 2 mapped (clone) from Shape 1: "+JSON.stringify( shape2.data ));
+
+			console.log("\nIterate through Shape 2 vertices")
+			for(var i=0; i < shape2.vertices.length; i++){
+
+				vertex = shape2.vertices[i];
+				p = { worldX : vertex.worldX , worldY : vertex.worldY };
+
+				console.log("Vertex: ",vertex.getData(),JSON.stringify(p));
+			}
+
+
+			shape.removeVertex(v);
+			console.log("\nShape 1 remove vertex 1: "+JSON.stringify( shape.updateData() ));
+			//console.log("Graph unchanged: "+JSON.stringify( graph.updateData() ));
+
+			shape.removeVertex(v3);
+			console.log("\nShape 1 remove vertex 3: "+JSON.stringify( shape.updateData() ));
+			//console.log("Graph vertex removed: "+JSON.stringify( graph.updateData() ));
+
+			console.log("\nShape 2 unchanged: "+JSON.stringify( shape2.data ));
+
+			var shape3 = new Shape();
+			shape3.map(shape2,true);
+			console.log("\nShape 3 mapped w/ overwrite (identity) from Shape 2: "+JSON.stringify( shape3.data ));
+
+			v2 = shape2.vertices[1];
+			shape2.removeVertex(v2);
+			console.log("\nShape 2 removed vertex 2: "+JSON.stringify( shape2.updateData() ));
+			console.log("\nShape 3 unchanged: "+JSON.stringify( shape3.updateData() ));
+			console.log("\nShape 3 getData: "+JSON.stringify( shape3.getData() ));
+
+
+			console.log("\n\nGRAPH\n");
+
+			// Test graph
+			shape3.name = "Shape 03 (clone of 02)"; // avoid confusion
+			var shapes = [shape,shape2,shape3];
+			v = new Vertex(777,777);
+			var vertices = [v];
+
+			var graph = new Graph('Test Graph');
+			graph.updateData();
+			console.log("\nNew Graph created: ",JSON.stringify(graph.data));
+
+			graph.addVertices(vertices);
+			graph.addVertices(vertices);
+			graph.updateData();
+			console.log("\nVertices added to graph x2",JSON.stringify(graph.data));
+
+			graph.addShapes(shapes);
+			graph.addShapes(shapes);
+			graph.updateData();
+			console.log("\nShapes added to graph x2",JSON.stringify(graph.data));
+
+			v.x = 999;
+			v.y = 999;
+			graph.updateData();
+			console.log("\nVertex:",v.id,"updated in graph",JSON.stringify(graph.data));
+
+			var graph2 = new Graph('Second Graph');
+			graph2.updateData();
+			console.log("\nGraph 2 created: ",JSON.stringify(graph2.data));
+
+			graph2.map(graph.data);
+			console.log("\nGraph 2 mapped from Graph 1 data: ",JSON.stringify(graph2.data));
+
+
+			// Test Animation
+			console.log("\n\nANIMATION\n");
+
+			var timeline = new Timeline(graph);
+			console.log(timeline);
+
+			timeline.keyframe(1);
+			console.log("\tKeyframe added to timeline at t=1");
+			console.log("\tVertex at t=1",JSON.stringify(timeline.findFrames(v.id)));
+
+			v.x = 808;
+			v.y = 808;
+
+			timeline.keyframe(3);
+			console.log("\tVertex changed, Keyframe added to timeline at t=3",JSON.stringify(timeline.findFrames(v.id)));
+
+			v.x = 444;
+			v.y = 444;
+
+			timeline.keyframe(2);
+			console.log("\tVertex changed, Keyframe added to timeline at t=2",JSON.stringify(timeline.findFrames(v.id)));
+
+			v.x = 757;
+			v.y = 757;
+
+			timeline.keyframe(3);
+			console.log("\tVertex changed, Keyframe added to timeline at t=3 (REPLACE)",JSON.stringify(timeline.findFrames(v.id)));
+
+			var timelineJson = JSON.stringify(timeline.getData());
+			console.log("\nTimeline data")
+			console.log(timelineJson);
+
+			var timelineData = JSON.parse(timelineJson);
+			var timeline2 = new Timeline(graph,timelineData[graph.name]);
+			console.log("\nTimeline JSON imported to new Timeline");
+			console.log(JSON.stringify(timeline2.getData()));
+		
+			// Animation class
+			console.log("\n\nTest ANIMATION class - - - -\n");
+
+			timeline2 = new Timeline(graph2); // make a unique timeline
+			timeline2.keyframe(0);
+
+			var animation = new Animation("Testing");
+			console.log("\nInitial animation object");
+			console.log(JSON.stringify(animation.getData()));
+
+			animation.addTimeline(timeline);
+			animation.addTimeline(timeline2);
+
+			var animationData = animation.getData();
+			console.log("\nData after adding timeline & timeline2");
+			console.log(JSON.stringify(animationData));
+
+			var animation2 = new Animation("Twerking");
+			console.log("\nSecond animation object");
+			console.log(JSON.stringify(animation2.getData()));
+
+			var graphList = [graph,graph2];
+			animation2.map(graphList,animationData);
+			console.log("\nAnimation 2 mapped with [graph,graph2] Animation 1 data (no overwrite)");
+			console.log(JSON.stringify(animation2.getData()));
+
+// LOADER
+			console.log("\n\nLOADER\tFULL DATA EXPORT\n");
+
+			var loader = new Loader();
+			var jsonAll = loader.exportJSON(graphList,[animation,animation2]);
+			console.log("\nExported as JSON");
+			console.log(jsonAll);
+
+			var wrapper = loader.importJSON(jsonAll);
+			console.log("\nImported back, exported again as JSON");
+			jsonAll = loader.exportJSON(wrapper.graphList,wrapper.animationList);
+			console.log(jsonAll);
+
+			console.log("\n\nLOADER\tEXTERNAL FILE: data/_test.json\n");
+			loader.loadDataUrl('./data/_test.json',function(data){
+				console.log("SUCCESS!");
+				console.log("graphList[0]",JSON.stringify(data.graphList[0].getData()));
+				console.log("animationList[0]",JSON.stringify(data.animationList[0].getData()));
+			});
+
+
+
+			// Tweening
+			console.log("\n\nTWEENING\n");
+
+			console.log("\nGraph vertices at start:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(-1.0);
+			console.log("\nTimeline adjusted to T=-1.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(0);
+			console.log("\nTimeline adjusted to T=0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(0.5);
+			console.log("\nTimeline adjusted to T=0.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(1.0);
+			console.log("\nTimeline adjusted to T=1.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(1.5);
+			console.log("\nTimeline adjusted to T=1.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(2.0);
+			console.log("\nTimeline adjusted to T=2.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(2.5);
+			console.log("\nTimeline adjusted to T=2.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(4.0);
+			console.log("\nTimeline adjusted to T=4.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			// TEST WITH LOOPING
+
+			console.log("\n\nAGAIN - with LOOPING\n");
+
+			console.log("\nGraph vertices at start:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			console.log("\tTimeline, totalDuration:",timeline.totalDuration());
+
+			timeline.apply(-1.0,true);
+			console.log("\nTimeline adjusted to T=-1.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(0,true);
+			console.log("\nTimeline adjusted to T=0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(0.5,true);
+			console.log("\nTimeline adjusted to T=0.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(1.0,true);
+			console.log("\nTimeline adjusted to T=1.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(1.5,true);
+			console.log("\nTimeline adjusted to T=1.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(2.0,true);
+			console.log("\nTimeline adjusted to T=2.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(2.5,true);
+			console.log("\nTimeline adjusted to T=2.5, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+			timeline.apply(4.0,true);
+			console.log("\nTimeline adjusted to T=4.0, graph vertices:");
+			graph.updateData();
+			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+/* */
+		//}
+		</script>
+			
+	</head>
+	<body>
+        <header>
+            <h1>Header</h1>
+            <figure class="masthead">
+                <!-- CSS image here -->
+            </figure>
+        </header>
+
+        <section id="content" class="clearfix">
+			<nav id="navbar">
+				<div class="box">
+					<span>Bones</span>
+	            	<ul id="boneList"></ul>
+	            </div>
+	            <div class="box">
+					<span>Shapes</span>
+	            	<ul id="shapeList"></ul>
+	            </div>
+	        </nav>
+
+
+<!--
+	        <aside>
+	        	<div>Aside: Sidebar content</div>
+	        </aside>
+
+	        <div>div: Column 1</div>
+	        <div>div: Column 2</div>
+-->
+	        <div class="infoPanel">
+	        	div.infoPanel: Tools here
+	        </div>
+
+	    </section>
+
+        <footer>
+        	<div >Footer</div>
+        </footer>
+
+	</body>
+</html>
+		

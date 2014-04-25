@@ -1,0 +1,84 @@
+{
+  "graphs": {
+    "Main graph": {
+      "vertices": [
+        {
+          "id": 0,
+          "bone": "root",
+          "x": 142,
+          "y": 222
+        },
+        {
+          "id": 1,
+          "bone": "root",
+          "x": 79,
+          "y": 74
+        },
+        {
+          "id": 2,
+          "bone": "root",
+          "x": 300,
+          "y": 53
+        },
+        {
+          "id": 3,
+          "bone": "root",
+          "x": 243,
+          "y": 235
+        }
+      ],
+      "shapes": [
+        {
+          "name": "shape_0",
+          "closedPath": false,
+          "hasStroke": true,
+          "hasFill": true,
+          "strokeStyle": "#333333",
+          "fillStyle": "#eeeeee",
+          "vertexList": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    }
+  },
+  "animations": {
+    "testAnimation": {
+      "graphs": {
+        "Main graph": {
+          "0": [
+            {
+              "time": 0,
+              "x": 142,
+              "y": 222
+            }
+          ],
+          "1": [
+            {
+              "time": 0,
+              "x": 79,
+              "y": 74
+            }
+          ],
+          "2": [
+            {
+              "time": 0,
+              "x": 300,
+              "y": 53
+            }
+          ],
+          "3": [
+            {
+              "time": 0,
+              "x": 243,
+              "y": 235
+            }
+          ]
+        }
+      }
+    }
+  }
+}

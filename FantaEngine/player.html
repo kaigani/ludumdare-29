@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>FantaEngine Player</title>
+
+		<!-- Styles -->
+		<!-- <link rel="stylesheet" href="assets/css/main.css">-->
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/sylvester.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Loader.js"></script> 
+		<script src="src/Stage.js"></script> 
+		<script src="src/Shape.js"></script> 
+		<script src="src/Animation.js"></script> 
+
+		<script>
+
+			var stage;
+
+			var loader = new Loader();
+
+			// GUI helper objects
+			var shapeObserver = new Shape(); 
+			var boneObserver = new Bone();
+			var guiData = {
+				filename : '_test.json',
+				loop : true
+			};
+
+			var update = function(){
+
+
+				stage.update();
+
+			};
+
+			
+			var exportData = function(){
+
+				stage.timeline.apply(0); // zero timeline 
+				stage.timeline.keyframe(0); // put a keyframe at the start if none exists
+				stage.graph.updateData(); // timeline will do this, but just to be explicit
+
+				var animation = new Animation(guiData.animationName);
+				animation.addTimeline(stage.timeline);
+
+				var json = loader.exportJSON([stage.graph],[animation]);
+				var parts = [json];
+				var blob = new Blob(parts, {type : 'application/json'}); 
+				var localUrl = window.URL.createObjectURL(blob);
+
+				//console.log(myUrl);
+
+				var e = document.getElementById('fileList');
+				var link = document.createElement('a');
+				link.href = localUrl;
+				var filename = "export_"+Date.now()+".json";
+				link.innerText = filename;
+				link.download = filename;
+				e.appendChild(link);
+
+				console.log("Data exported as: "+localUrl);
+			};
+
+			function loadFile(){
+
+				var fileUrl = './data/'+guiData.filename;
+				console.log("Load: "+fileUrl);
+
+				loader.loadDataUrl(fileUrl,function(data){
+					var graph = data.graphList[0];
+					var animation = data.animationList[0];
+					var timeline = animation.findTimeline(graph.name);
+
+					console.log("Graph: ",graph);
+					console.log("Animation: ",animation);
+					console.log("Timeline: ",timeline);
+
+					stage.loadAnimation(graph,timeline);
+				});
+
+			};
+
+			function play(){
+
+				stage.play(guiData.loop);
+			}
+
+			
+			window.onload = function(){
+
+				// ----
+				var canvas = document.getElementById('myCanvas');
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+
+				stage = new Stage(canvas);
+				stage.init();
+				stage.update();
+
+				// ---
+
+				// GUI
+
+				gui = new dat.GUI();
+				var f;
+
+				f = gui.addFolder('Data source')
+				f.add(guiData,'filename');
+				f.add(window,'loadFile');
+				f.open();
+
+				f = gui.addFolder('Animation');
+				f.add(stage,'timeIndex',0,1000).step(1).listen();
+				f.add(stage,'addKeyframe');
+				f.add(stage,'next');
+				f.add(stage,'prev');
+				f.add(stage,'rewind');
+				f.add(window,'play');
+				f.add(guiData,'loop');
+				f.add(stage,'pause');
+				f.open();
+
+			};			
+
+		</script>
+			
+	</head>
+	<body>
+
+		<canvas id='myCanvas' width=600 height=600></canvas>
+
+	</body>
+</html>
+		

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>My IDE - Animation</title>
+
+		<!-- mobile viewport: -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="assets/css/main.css"> 
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<!-- <script src="lib/sylvester.js"></script> -->
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Stage.js"></script>
+
+		<script>
+
+			var stage;
+
+			window.onload = function(){
+
+				var canvas = document.getElementById('myCanvas');
+				stage = new Stage(canvas);
+
+				var navbar = document.getElementById('navbar');
+				//var gui = new dat.GUI({ autoplace: false });
+				var gui = new dat.GUI();
+				var f;
+				
+				//navbar.appendChild(gui.domElement);
+				gui.add(stage,'debug').onChange(stage.update);
+				gui.add(stage,'mode',["PLOT","MOVE","DRAG","DELETE","INSERT"]);
+
+				gui.add(stage,'clear').onChange(updateLater);
+				gui.add(stage,'pushShape').onChange(updateLater);
+
+				f = gui.addFolder('Shape');
+				f.add(stage.shape,'closedPath').listen().onChange(stage.update);
+				f.add(stage.shape,'hasStroke').listen().onChange(stage.update);
+				f.add(stage.shape,'hasFill').listen().onChange(stage.update);
+				f.addColor(stage.shape,'strokeStyle').listen().onChange(stage.update);
+				f.addColor(stage.shape,'fillStyle').listen().onChange(stage.update);
+				f.open();
+
+				var f = gui.addFolder('Animation');
+				f.add(stage,'timeIndex',0,1000).step(1).listen();
+				f.add(stage,'addKeyframe');
+				f.add(stage,'next');
+				f.add(stage,'prev');
+				f.add(stage,'rewind');
+				f.add(stage,'play');
+				f.add(stage,'pause');
+
+				function updateLater(){
+					setTimeout(function(){
+						stage.update();
+					},10);
+				}
+			};
+
+		</script>
+			
+	</head>
+	<body>
+        <header>
+            <h1>Headline</h1>
+            <figure class="masthead">
+                <!-- CSS image here -->
+            </figure>
+        </header>
+
+        <section id="content" class="clearfix">
+			<nav id="navbar">
+				<span>nav: navigation</span>
+	            <ul>
+	                <li><a href="#">Menu item 1</a></li>
+	                <li><a href="#">Menu item 2</a></li>
+	                <li><a href="#">Menu item 3</a></li>
+	            </ul>
+	        </nav>
+
+	        <div>
+	        	<canvas id='myCanvas' width=600 height=600></canvas>
+	        </div>
+<!--
+	        <aside>
+	        	<div>Aside: Sidebar content</div>
+	        </aside>
+
+	        <div>div: Column 1</div>
+	        <div>div: Column 2</div>
+-->
+	        <div class="infoPanel">
+	        	div.infoPanel: Tools here
+	        </div>
+
+	    </section>
+
+        <footer>
+        	<div >Footer</div>
+        </footer>
+
+	</body>
+</html>
+		
