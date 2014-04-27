@@ -28,7 +28,9 @@
 			var shapeObserver = new Shape(); 
 			var boneObserver = new Bone();
 			var guiData = {
-				animationName : 'testAnimation'
+				animationName : 'testAnimation',
+				filename : '_test.json',
+				loop : false
 			};
 
 			var update = function(){
@@ -65,6 +67,16 @@
 				stage.update();
 
 			};
+
+			function loadFile(){
+
+				var fileUrl = './data/'+guiData.filename;
+				console.log("Load: "+fileUrl);
+
+				stage.loadAnimationByUrl(fileUrl);
+
+			};
+
 
 			var createMenuItem = function(element,innerText,callback,value){
 
@@ -157,6 +169,10 @@
 				console.log("Data exported as: "+localUrl);
 			};
 
+			function play(){
+
+				stage.play(guiData.loop);
+			}
 			
 			window.onload = function(){
 
@@ -176,6 +192,10 @@
 				var f;
 
 				gui.add(stage,'debug').onChange(stage.update);
+				f = gui.addFolder('Data source')
+				f.add(guiData,'filename');
+				f.add(window,'loadFile');
+
 				gui.add(stage,'mode',["PLOT","MOVE","DRAG","DELETE","INSERT","ADD_BONE","MOVE_BONE"]).listen();
 
 				f = gui.addFolder('Root Bone');
@@ -213,7 +233,8 @@
 				f.add(stage,'next');
 				f.add(stage,'prev');
 				f.add(stage,'rewind');
-				f.add(stage,'play');
+				f.add(window,'play');
+				f.add(guiData,'loop');
 				f.add(stage,'pause');
 
 				f = gui.addFolder('Export');

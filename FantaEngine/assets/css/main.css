@@ -92,3 +92,19 @@ ASIDE
 {
 	clear: both;
 }
+
+/* FONTS */
+/* http://www.dafont.com/perfect-dos-vga-437.font */
+	@font-face {
+	    font-family: 'DOS_1';
+	    src: url('../font/DOS_1.ttf');
+	}	
+	@font-face {
+	    font-family: 'DOS_2';
+	    src: url('../font/DOS_2.ttf');
+	}
+
+.font-loader {
+	font-family: 'DOS_1,DOS_2';
+}
+

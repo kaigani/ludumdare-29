@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Test polygons</title>
+
+		<!-- Styles -->
+		<!-- <link rel="stylesheet" href="assets/css/main.css">-->
+
+		<!-- Libraries -->
+		<script src="../lib/dat.gui.min.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="../src/Utilities.js"></script> 
+
+		<script>
+			
+			window.onload = function(){
+
+				// ----
+				var canvas = document.getElementById('myCanvas');
+				var c = canvas.getContext('2d');
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+
+			
+				// Polygon
+				var polygon = [
+
+					10,10,
+					60,10,
+					100,100,
+					40,130,
+					200,140,
+					100,200,
+					160,60
+				];
+
+				// Draw the polygon
+				c.strokeStyle = "#0f0";
+				c.fillStyle = "rgba(0,255,0,0.1);";
+
+				c.beginPath();
+				c.moveTo(polygon[0],polygon[1]);
+
+				for(var ii = 2;ii<polygon.length;ii+=2){
+					c.lineTo(polygon[ii],polygon[ii+1]);
+					console.log(ii);
+				}
+
+				c.closePath();
+				c.fill();
+				c.stroke();
+
+				canvas.addEventListener('click',clickHandler,true);
+
+				function clickHandler(e){
+					var x = e.clientX;
+					var y = e.clientY;
+					console.log("Click at:",x,y);
+
+					c.fillStyle = (polygonContainsPoint(polygon,x,y))?"rgb(255,0,0)":"rgba(0,0,0,0.3)";
+
+					c.fillRect(x,y,3,3);
+
+				}
+			};			
+
+		</script>
+		<style>
+			html {
+				cursor: pointer;
+			}
+		</style>
+			
+	</head>
+	<body>
+
+		<canvas id='myCanvas' width=600 height=600></canvas>
+
+	</body>
+</html>
+		

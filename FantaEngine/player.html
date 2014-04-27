@@ -40,49 +40,12 @@
 			};
 
 			
-			var exportData = function(){
-
-				stage.timeline.apply(0); // zero timeline 
-				stage.timeline.keyframe(0); // put a keyframe at the start if none exists
-				stage.graph.updateData(); // timeline will do this, but just to be explicit
-
-				var animation = new Animation(guiData.animationName);
-				animation.addTimeline(stage.timeline);
-
-				var json = loader.exportJSON([stage.graph],[animation]);
-				var parts = [json];
-				var blob = new Blob(parts, {type : 'application/json'}); 
-				var localUrl = window.URL.createObjectURL(blob);
-
-				//console.log(myUrl);
-
-				var e = document.getElementById('fileList');
-				var link = document.createElement('a');
-				link.href = localUrl;
-				var filename = "export_"+Date.now()+".json";
-				link.innerText = filename;
-				link.download = filename;
-				e.appendChild(link);
-
-				console.log("Data exported as: "+localUrl);
-			};
-
 			function loadFile(){
 
 				var fileUrl = './data/'+guiData.filename;
 				console.log("Load: "+fileUrl);
 
-				loader.loadDataUrl(fileUrl,function(data){
-					var graph = data.graphList[0];
-					var animation = data.animationList[0];
-					var timeline = animation.findTimeline(graph.name);
-
-					console.log("Graph: ",graph);
-					console.log("Animation: ",animation);
-					console.log("Timeline: ",timeline);
-
-					stage.loadAnimation(graph,timeline);
-				});
+				stage.loadAnimationByUrl(fileUrl);
 
 			};
 

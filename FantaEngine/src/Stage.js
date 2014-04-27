@@ -94,6 +94,21 @@ var Stage = function(theCanvas){
 		this.update();
 	};
 
+	this.loadAnimationByUrl = function(url){
+		loader.loadDataUrl(url,function(data){
+			var graph = data.graphList[0];
+			var animation = data.animationList[0];
+			var timeline = animation.findTimeline(graph.name);
+
+			console.log("LOADING...");
+			console.log("Graph: ",graph);
+			console.log("Animation: ",animation);
+			console.log("Timeline: ",timeline);
+
+			stage.loadAnimation(graph,timeline);
+		});
+	};
+
 	// PLOT relative to bone!
 	this.plot = function(p){
 

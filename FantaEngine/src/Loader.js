@@ -5,6 +5,7 @@
 var Loader = function(){
 
 	var loader = this;
+	var preloader = new html5Preloader();
 
 	this.loadDataUrl = function(url,callback){
 
@@ -15,6 +16,22 @@ var Loader = function(){
 
 			callback(data);
 		});
+	};
+
+	this.preload = function(queue,callback){
+
+		preloader.addFiles(queue);
+
+		preloader.on('finish', function(){
+			console.log('All assets loaded.');
+			//console.log(preloader.getFile());
+			callback();
+		});
+	};
+
+	this.getFile = function(reference){
+
+		return preloader.getFile(reference);
 	};
 
 	this.exportData = function(graphList,animationList){

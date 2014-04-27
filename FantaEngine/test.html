@@ -13,10 +13,14 @@
 
 		<!-- Core methods & classes -->
 		<script src="src/Utilities.js"></script> 
-		<script src="src/Loader.js"></script> 
+		<script src="src/Loader.js"></script>
+		<script src="src/EventManager.js"></script> 
 		<!-- <script src="src/Stage.js"></script> -->
 		<script src="src/Shape.js"></script> 
 		<script src="src/Animation.js"></script> 
+
+		<script src="src/Game.js"></script>
+		<script src="src/Scene.js"></script>
 
 		<script>
 
@@ -272,7 +276,7 @@
 
 			console.log("\n\nLOADER\tEXTERNAL FILE: data/_test.json\n");
 			loader.loadDataUrl('./data/_test.json',function(data){
-				console.log("SUCCESS!");
+				console.log("\n\nLOADING FILE SUCCESS!");
 				console.log("graphList[0]",JSON.stringify(data.graphList[0].getData()));
 				console.log("animationList[0]",JSON.stringify(data.animationList[0].getData()));
 			});
@@ -375,6 +379,101 @@
 			console.log("\nTimeline adjusted to T=4.0, graph vertices:");
 			graph.updateData();
 			console.log(JSON.stringify(graph.data.vertices),'\n');
+
+// TEST EVENT MANAGER
+			console.log("\n\nEVENT MANAGER\n");
+
+			var eventManager = new EventManager();
+
+			var handlerA = function(data){ console.log("Handler A - received data:",data); };
+			var handlerB = function(data){ console.log("Handler B - received data:",data); };
+
+			eventManager.on("FirstEvent",handlerA);
+			eventManager.on("FirstEvent",handlerA);
+
+			console.log("\nHandler A added on 'FirstEvent' x 2");
+			eventManager.send("FirstEvent","Show once");
+
+			eventManager.on("SecondEvent",handlerA);
+			eventManager.on("SecondEvent",handlerB);
+
+			console.log("\nHandler A & B added on 'SecondEvent'");
+			eventManager.send("SecondEvent","Show twice");
+
+			console.log("\nHandler A removed from 'SecondEvent'");
+			eventManager.remove("SecondEvent",handlerA);
+			eventManager.send("SecondEvent","Show once now");
+
+			// failure cases
+			console.log("\nRemoving Handler A from nonexistent event");
+			eventManager.remove("FakeEvent",handlerA);
+
+			console.log("\nRemoving fake handler from 'SecondEvent'");
+			eventManager.remove("SecondEvent",handlerA);
+
+			console.log("\nSending to an event without handlers");
+			eventManager.send("FakeEvent",handlerA);
+
+			// Can add more cases if I introduce events that stop bubbling up -- TODO
+
+			console.log("\n\nEVENT MANAGER: QUEUE\n");
+
+			// Test queue & finish
+			console.log("\nQueuing 'FirstEvent' twice");
+			eventManager.queue("FirstEvent","Queued 1st");
+			eventManager.queue("FirstEvent","Queued 2nd");
+
+			console.log("\tFinished - 1");
+			eventManager.finished();
+			console.log("\tFinished - 2 (set eventDispatched=false)");
+			eventManager.finished();
+			console.log("\tFinished - 3 (do nothing)");
+			eventManager.finished();
+
+			// Test queue with interrupt
+			console.log("\nQueuing 'FirstEvent', 'SecondEvent', 'FirstEvent'x2 with interrupt=true");
+			eventManager.queue("FirstEvent","Queued 1st",true);
+			eventManager.queue("SecondEvent","Queued 2nd",true);
+			eventManager.queue("FirstEvent","Queued 3rd",true);
+			eventManager.queue("FirstEvent","Queued 4th",true);
+			console.log("\tFinished - 1");
+			eventManager.finished();
+			console.log("\tFinished - 2 (set eventDispatched=false)");
+			eventManager.finished();
+			console.log("\tFinished - 3 (do nothing)");
+			eventManager.finished();
+
+			// Test queue with interrupt
+			console.log("\nQueuing 'FirstEvent', 'SecondEvent', 'FirstEvent' - test dequeue");
+			eventManager.queue("FirstEvent","Queued 1st");
+			eventManager.queue("SecondEvent","Queued 2nd");
+			eventManager.queue("FirstEvent","Queued 3rd");
+
+
+			console.log("\nDequeue 'SecondEvent'");
+			eventManager.dequeue("SecondEvent");
+			console.log("\tFinished - 1");
+			eventManager.finished();
+			console.log("\tFinished - 2 (set eventDispatched=false)");
+			eventManager.finished();
+			console.log("\tFinished - 3 (do nothing)");
+			eventManager.finished();
+
+
+
+// TEST GAME STATE
+			console.log("\n\nGAME STATE\n");
+
+			var game = new Game();
+			game.setProperty("Foo","Bar");
+			game.setProperty("Kai",1973);
+
+			console.log("Set game properties, Foo, Kai",game);
+			console.log("\tFoo:",game.getProperty("Foo"));
+			console.log("\tKai:",game.getProperty("Kai"));
+			console.log("\tBax:",game.getProperty("Bax"));
+
+
 
 /* */
 		//}

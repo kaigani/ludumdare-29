@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Test Scene</title>
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/sylvester.js"></script>
+		<script src="lib/html5Preloader.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Loader.js"></script>
+		<script src="src/EventManager.js"></script> 
+		<!-- <script src="src/Stage.js"></script> -->
+		<script src="src/Shape.js"></script> 
+		<script src="src/Animation.js"></script> 
+
+		<script src="src/Game.js"></script>
+		<script src="src/Scene.js"></script>
+		<script src="src/Encounter.js"></script>
+
+		<script>
+
+			var global = {};
+
+			var game;
+			
+			window.onload = function(){
+
+				game = new Game();
+
+				// Preload assets
+				var assetQueue = [
+
+					"assets/img/player.png" ,
+					"assets/img/npc.png" ,
+					"assets/img/bg1.jpg" ,
+					"assets/img/bg2.jpg" ,
+					"assets/img/pattern-01.png"
+				];
+
+				game.loader.preload(assetQueue,init);
+			}
+
+			function init(){
+
+				// ----
+				var canvas = document.getElementById('myCanvas');
+				var c = canvas.getContext('2d');
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+
+				// Color palette
+				game.addColor('red','rgb(255,0,0)');
+				game.addColor('green','rgb(0,255,0)');
+				game.addColor('blue','rgb(0,0,255)');
+				game.addColor('yellow','rgb(255,255,0)');
+				game.addColor('magenta','rgb(0,255,255)');
+				game.addColor('black','rgb(0,0,0)');
+				game.addColor('white','rgb(255,255,255)');
+
+				game.addColor('pattern-01',c.createPattern(game.loader.getFile('assets/img/pattern-01.png'),'repeat'));
+
+	
+				// Scenes
+				var scene = new Scene("MyScene");
+				game.addScene(scene);
+				var scene2 = new Scene("Scene2");
+				game.addScene(scene2);
+
+				// TESTING - should use queue not send! and reference shouldn't be game
+				console.log("\nTESTING changing the scene - but nothing will happen here")
+				game.eventManager.send("gotoScene","MyScene"); 
+
+				// Setup Scene 1
+				scene.background = game.loader.getFile('assets/img/bg1.jpg');
+			
+				// Polygon
+				var polygon = [
+
+					10,10,
+					60,10,
+					100,100,
+					40,130,
+					200,140,
+					100,200,
+					160,60
+				];
+
+				var button = [
+					1100,10,
+					1160,10,
+					1160,50,
+					1100,50
+				];
+
+				scene.floorPoly = [
+					280, 228,
+					114, 420,
+					1024, 420,
+					900, 228 
+				];
+
+				var clickEvent = { event: "gotoScene", data: "Scene2" };
+				scene.addClickRegion(polygon,clickEvent);
+
+				clickEvent = {event: "startEncounter", data: "First encounter" };
+				scene.addClickRegion(button,clickEvent);
+
+				// Setup Scene 2
+				scene2.background = game.loader.getFile('assets/img/bg2.jpg');
+
+				scene2.floorPoly = [
+					265,201,
+					134,332,
+					1077,330,
+					885,163
+				];
+
+				polygon = [
+					447,110,
+					398,248,
+					489,309,
+					555,177
+				];
+
+				clickEvent = { event: "gotoScene", data: "MyScene" };
+				scene2.addClickRegion(polygon,clickEvent);
+
+				// should add the scenes here after setup- this should do nothing
+				game.addScene(scene);
+				game.addScene(scene2);
+
+				// clear the scene variables to avoid contamination
+				scene = null;
+				scene2 = null;
+
+				// Encounter
+				var encounter = new Encounter("First encounter");
+				game.addEncounter(encounter);
+
+ 				button = [
+					1000,canvas.height-130,
+					1060,canvas.height-130,
+					1060,canvas.height-90,
+					1000,canvas.height-90
+				];
+
+				clickEvent = { event: "endEncounter", data: true };
+				encounter.setConfirmButton(button,clickEvent);
+
+// END OF SETUP - START GAME
+				game.start();
+
+				//game.eventManager.on('Tick',function(data){ console.log(data); });
+
+// GAME FUNCTION - below ----
+// General Event handlers & Actions
+/*
+				canvas.addEventListener('click',clickHandler,true);
+
+				function clickHandler(e){
+					var event = {};
+					event.x = e.clientX;
+					event.y = e.clientY;
+
+					console.log("Clicked at:",event.x,event.y);
+
+					game.eventManager.send('click:'+game.currentScene.name,event);
+
+					c.fillStyle = (polygonContainsPoint(polygon,event.x,event.y))?"rgb(255,0,0)":"rgba(0,0,0,0.3)";
+					c.fillRect(event.x,event.y,3,3);
+
+				}
+*/
+			
+
+
+// THIS SHOULD BE A PLAYER EVENT - MOVE PLAYER?
+				game.eventManager.on('MoveTo',function(e){
+
+					console.log("Anonymous function will move the player to:",e.x,e.y);
+
+					game.currentScene.player.destination = {};
+					game.currentScene.player.destination.x = e.x;
+					game.currentScene.player.destination.y = e.y;
+
+					//movePlayer(true);
+					game.eventManager.on('Tick',movePlayer,window);
+
+				},window);
+
+				// Game loop
+				function update(){
+
+					//if(game.currentScene.player.moving === true) movePlayer(destination.x,destination.y);
+
+					// Update animation timer
+					//game.eventManager.send('Tick');
+
+					c.clearRect(0,0,canvas.width,canvas.height);
+					game.currentScene.render(canvas);
+
+					// this needs to be handled by GAME
+					if(game.mode === "ENCOUNTER"){
+						encounter.render(canvas);
+					}
+
+					//requestAnimationFrame(update);
+
+				}
+
+				game.eventManager.on('Tick',update,window);
+
+				// EVENT ACTIONS - alway think of start conditions - may be dispatched from a queue
+				function movePlayer(start){
+
+					// LOOPER
+					//var timer = function(){
+					//	movePlayer();
+					//};
+
+					// EVENT ACTION
+
+					// any start conditions?
+					//if(start){
+						// Loop the event until animation is finished
+					//	game.eventManager.on('Tick',timer);
+					//}
+
+					var speed = 1;
+
+					var dx = game.currentScene.player.destination.x-game.currentScene.player.x;
+					var dy = game.currentScene.player.destination.y-game.currentScene.player.y;
+					//console.log("dx,dy",dx,dy,game.currentScene.player);
+
+					var dist = $V([dx,dy]);
+					//console.log(dist,dist.modulus());
+
+					if(dist.modulus() > 1){
+
+						var unit = dist.toUnitVector();
+						var movement = unit.multiply(speed);
+
+						var offset = vectorToPoint(movement);
+						game.currentScene.player.x += offset.x;
+						game.currentScene.player.y += offset.y;
+
+					}else{
+						//game.currentScene.player.moving = false;
+						game.eventManager.finished('MoveTo'); // queued event
+						game.eventManager.remove('Tick',movePlayer);
+					}
+				}
+			};			
+
+		</script>
+		<style>
+			* {
+				cursor: pointer;
+				margin:0;
+				padding:0;
+				width:100%;
+				height:100%;
+			}
+		</style>
+			
+	</head>
+	<body>
+		<canvas id='myCanvas' width=600 height=600></canvas>
+	</body>
+</html>
+		
