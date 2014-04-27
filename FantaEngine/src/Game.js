@@ -15,8 +15,11 @@ function Game(){
 	var game = this;  // this is an evil thing
 	var isRunning = false;
 
+	// temporary hack
+	this.canvas = document.getElementById('myCanvas');
+
 	// PUBLIC
-	this.stage = null; // TODO new Stage
+	this.stage = new Stage(this.canvas);
 	this.eventManager = new EventManager();
 	this.loader = new Loader();
 
@@ -125,8 +128,7 @@ function Game(){
 	// EVENT HANDLER - click/drag by STATE --- TO DO - drag events
 	// put these handlers in the STAGE!!! TODO
 
-	// temporary hack
-	var canvas = document.getElementById('myCanvas');
+	var canvas = game.canvas;
 	canvas.addEventListener('click',clickHandler,true);
 
 	function clickHandler(e){

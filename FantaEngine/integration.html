@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Subliminal - Alpha</title>
+
+		<!-- Styles -->
+		<link rel="stylesheet" href="assets/css/main.css">
+
+		<!-- Libraries -->
+		<script src="lib/dat.gui.min.js"></script>
+		<script src="lib/sylvester.js"></script>
+		<script src="lib/html5Preloader.js"></script>
+
+		<!-- Core methods & classes -->
+		<script src="src/Utilities.js"></script> 
+		<script src="src/Loader.js"></script>
+		<script src="src/EventManager.js"></script> 
+		<script src="src/Stage_alpha.js"></script>
+		<script src="src/Shape.js"></script> 
+		<script src="src/Animation.js"></script> 
+
+		<script src="src/Game.js"></script>
+		<script src="src/Scene.js"></script>
+		<script src="src/Encounter.js"></script>
+
+		<script>
+
+			var global = {};
+
+			var game;
+			
+			window.onload = function(){
+
+				game = new Game();
+
+				var fileUrl = './data/_test3.json';
+				console.log("Load: "+fileUrl);
+
+				game.stage.loadAnimationByUrl(game.loader, fileUrl);
+
+				// Preload assets
+				var assetQueue = [
+
+					"assets/img/player.png" ,
+					"assets/img/npc.png" ,
+					"assets/img/bg1.jpg" ,
+					"assets/img/bg2.jpg" ,
+					"assets/img/0-wire.png" ,
+					"assets/img/1-wire.png" ,
+					"assets/img/2-wire.png" ,
+					"assets/img/3-wire.png" ,
+					"assets/img/4-wire.png" ,
+					"assets/img/5-wire.png" ,
+					"assets/img/6-wire.png" ,
+					"assets/img/7-wire.png" ,
+					"assets/img/pattern-01.png"
+				];
+
+				game.loader.preload(assetQueue,init);
+			}
+
+			function init(){
+
+				// ----
+				var canvas = document.getElementById('myCanvas');
+				var c = canvas.getContext('2d');
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+
+				// Color palette
+				game.addColor('red','rgb(255,0,0)');
+				game.addColor('green','rgb(0,255,0)');
+				game.addColor('blue','rgb(0,0,255)');
+				game.addColor('yellow','rgb(255,255,0)');
+				game.addColor('magenta','rgb(0,255,255)');
+				game.addColor('black','rgb(0,0,0)');
+				game.addColor('white','rgb(255,255,255)');
+
+				game.addColor('pattern-01',c.createPattern(game.loader.getFile('assets/img/pattern-01.png'),'repeat'));
+
+	
+				// Scenes
+				var scene = new Scene("maze-00");
+				scene.background = game.loader.getFile('assets/img/0-wire.png');
+				game.addScene(scene);
+			
+				var scene = new Scene("maze-01");
+				scene.background = game.loader.getFile('assets/img/1-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-02");
+				scene.background = game.loader.getFile('assets/img/2-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-03");
+				scene.background = game.loader.getFile('assets/img/3-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-04");
+				scene.background = game.loader.getFile('assets/img/4-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-05");
+				scene.background = game.loader.getFile('assets/img/5-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-06");
+				scene.background = game.loader.getFile('assets/img/6-wire.png');
+				game.addScene(scene);
+
+				var scene = new Scene("maze-07");
+				scene.background = game.loader.getFile('assets/img/7-wire.png');
+				game.addScene(scene);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-00',function(e){
+					console.log('Maze 00 click handler - - - - - - - > maze 01');
+					game.eventManager.send('gotoScene','maze-01');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-01',function(e){
+					console.log('Maze 01 click handler - - - - - - - > maze 02');
+					game.eventManager.send('gotoScene','maze-02');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-02',function(e){
+					console.log('Maze 02 click handler - - - - - - - > maze 03');
+					game.eventManager.send('gotoScene','maze-03');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-03',function(e){
+					console.log('Maze 03 click handler - - - - - - - > maze 04');
+					game.eventManager.send('gotoScene','maze-04');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-04',function(e){
+					console.log('Maze 04 click handler - - - - - - - > maze 05');
+					game.eventManager.send('gotoScene','maze-05');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-05',function(e){
+					console.log('Maze 05 click handler - - - - - - - > maze 06');
+					game.eventManager.send('gotoScene','maze-06');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-06',function(e){
+					console.log('Maze 06 click handler - - - - - - - > maze 07');
+					game.eventManager.send('gotoScene','maze-07');
+
+				},this);
+
+				// Scene change event handlers
+				game.eventManager.on('click:maze-07',function(e){
+					console.log('Maze 07 click handler - - - - - - - > maze 00');
+					game.eventManager.send('gotoScene','maze-00');
+
+				},this);
+
+// END OF SETUP - START GAME
+				game.start();
+
+				game.stage.play(true); // looping
+
+				//game.eventManager.on('Tick',function(data){ console.log(data); });
+
+// GAME FUNCTION - below ----
+// General Event handlers & Actions
+
+				// Game loop
+				function update(){
+
+					//if(game.currentScene.player.moving === true) movePlayer(destination.x,destination.y);
+
+					// Update animation timer
+					//game.eventManager.send('Tick');
+
+					c.clearRect(0,0,canvas.width,canvas.height);
+					game.currentScene.render(canvas);
+
+					game.stage.update();
+
+					//requestAnimationFrame(update);
+				}
+
+				game.eventManager.on('Tick',update,window);
+
+			};			
+
+		</script>
+		<style>
+			* {
+				cursor: pointer;
+				margin:0;
+				padding:0;
+				width:100%;
+				height:100%;
+			}
+		</style>
+			
+	</head>
+	<body>
+		<canvas id='myCanvas' width=600 height=600></canvas>
+	</body>
+</html>
+		

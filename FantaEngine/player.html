@@ -10,11 +10,12 @@
 		<!-- Libraries -->
 		<script src="lib/dat.gui.min.js"></script>
 		<script src="lib/sylvester.js"></script>
-
+		<script src="lib/html5Preloader.js"></script>
+		
 		<!-- Core methods & classes -->
 		<script src="src/Utilities.js"></script> 
 		<script src="src/Loader.js"></script> 
-		<script src="src/Stage.js"></script> 
+		<script src="src/Stage_player.js"></script> 
 		<script src="src/Shape.js"></script> 
 		<script src="src/Animation.js"></script> 
 
@@ -45,7 +46,7 @@
 				var fileUrl = './data/'+guiData.filename;
 				console.log("Load: "+fileUrl);
 
-				stage.loadAnimationByUrl(fileUrl);
+				stage.loadAnimationByUrl(loader,fileUrl);
 
 			};
 

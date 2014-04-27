@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Test App - build for Hype</title>
+
+		<!-- mobile viewport: -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+		<!-- Libraries -->
+		<script src="lib/hypeViewController.min.js"></script>
+		<!-- Core JS methods -->
+		<script src="src/Map_v02.js"></script> 
+		<script src="src/Stage_v02.js"></script> 
+		<script src="App.js"></script> 
+
+		<script>
+
+			var myApp;
+
+			window.onload = function(){
+
+				myApp = new App();
+
+			}
+		</script>
+		<style type="text/css" media="screen">
+			html {
+				 height: 100%;
+				 overflow: hidden;
+			}
+			
+			body {
+				margin:  0px;
+				padding: 0px;
+				height: 100%;
+			}
+
+			canvas {
+			    position: fixed;
+			    top: 0;
+			    left: 0;
+			    bottom: 0;
+			    right: 0;
+			    z-index:99;
+			}
+		</style>
+	</head>
+	<body>
+		placeholder
+		
+	</body>
+</html>
+
+
