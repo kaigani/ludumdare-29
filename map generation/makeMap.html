@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Map Generator</title>
+
+		<!-- mobile viewport: -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+		<!-- Core JS methods -->
+		<script src="src/Stage.js"></script> 
+		<script src="src/Map.js"></script> 
+
+		<script>
+
+			// GLOBALS
+			var canvas, c;
+			var stage;
+			var map;
+
+
+			window.onload = function (){
+
+				console.log("Loaded.\n\n");
+				
+				canvas = document.getElementById('myCanvas');
+				// full-size canvas
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+
+				c = canvas.getContext('2d');
+
+				stage = new Stage(canvas);
+
+				map = new Map();
+				var root;
+
+				for(var i=0;i<3;i++){
+					root=map.generateMap(64);
+					root.setProperty('root',true);
+					console.log(map.spawnPoints.length);
+				}
+
+
+				for(var count=0;map.spawnPoints.length < 3 && count < 1000;count++){
+					var rand_i = Math.floor(Math.random()*map.rooms.length);
+					var room = map.rooms[rand_i];
+					if(room.getProperty('depth') > 20){
+						room.setProperty('spawnPoint',true);
+						map.spawnPoints.push(room);
+					}
+				}
+				//root = map.generateMap(64);
+				//root.setProperty('root',true);
+				//root = map.generateMap(64);
+				//root.setProperty('root',true);
+
+				stage.drawMap(map);
+			};
+
+		
+			// Event listeners - Window
+			window.addEventListener('resize', handleResize, false);
+
+			function handleResize() {
+
+				// Resize to a full-size canvas
+				canvas.width = document.body.clientWidth;
+				canvas.height = document.body.clientHeight;
+			}
+
+		</script>
+		<script>
+    		function BlockElasticScroll(event) {
+        		event.preventDefault();
+    		}
+    	</script>
+		
+		<style type="text/css" media="screen">
+			html {
+				 height: 100%;
+				 overflow: hidden;
+			}
+			
+			body {
+				margin:  0px;
+				padding: 0px;
+				height: 100%;
+			}
+
+			.example {
+				margin-bottom: 20px;
+			}
+		</style>
+		
+	</head>
+	<body ontouchmove="BlockElasticScroll(event);">
+		<canvas id="myCanvas" width="100" height="100">
+			Your browser doesn't include support for the canvas tag.
+		</canvas>
+	</body>
+</html>
+		
