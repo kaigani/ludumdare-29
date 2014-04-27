@@ -1,4 +1,6 @@
-ludumdare-29
-============
+All the description about the project will come soon.
 
-Work in progress for my entry for Ludum Dare 29, and (hopefully) the final entry.
+To play: 
+Click to navigate. Any key will toggle the map.
+
+Every game is different.
