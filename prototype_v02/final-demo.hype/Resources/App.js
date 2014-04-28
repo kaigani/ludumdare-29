@@ -151,6 +151,11 @@ window.App = function App(){
 			console.warn("Illegal player move:",move);
 		}
 
+		if(map.spawnPoints.indexOf(player.room) !== -1){
+			
+			TTS.localSpeakText("Did you find what you were seeking?");
+		}
+
 		var frameView = player.room.getView(player.heading);
 		console.log("Frame view: ",frameView);
 
